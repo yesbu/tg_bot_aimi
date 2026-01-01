@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  telegram-bot:
+    build: .
+    container_name: aimi-telegram-bot
+    restart: unless-stopped
+
+    # Переменные окружения из .env файла
+    env_file:
+      - .env
+
+    # Монтируем volume для сохранения базы данных
+    volumes:
+      - ./data:/app/data
+      - ./bot.log:/app/bot.log
+
+    # Логирование
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Healthcheck (опционально)
+    healthcheck:
+      test: [ "CMD-SHELL", "pgrep -f 'python main.py' || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
