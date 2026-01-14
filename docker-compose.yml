@@ -34,40 +34,39 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-  # bot:
-  #   container_name: aimi-subscription-bot
-  #   build:
-  #     context: ./app
-  #     dockerfile: Dockerfile
-  #   restart: always
-  #   ports:
-  #     - "8000:8000"
-  #   environment:
-  #     POSTGRES_USER: ${POSTGRES_USER}
-  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-  #     POSTGRES_DB: ${POSTGRES_DB}
-  #     POSTGRES_HOST: ${POSTGRES_HOST}
-  #     POSTGRES_PORT: ${POSTGRES_PORT}
 
-  #     REDIS_HOST: ${REDIS_HOST}
-  #     REDIS_PORT: ${REDIS_PORT}
-  #     REDIS_DB: ${REDIS_DB}
-  #     REDIS_PASSWORD: ${REDIS_PASSWORD}
+  bot:
+    container_name: aimi-subscription-bot
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
 
-  #     TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_DB: ${REDIS_DB}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
 
-  #     PAYMENT_BASE_URL: ${PAYMENT_BASE_URL}
-  #     PAYMENT_USER: ${PAYMENT_USER}
-  #     PAYMENT_PASSWORD: ${PAYMENT_PASSWORD}
-  #     PAYMENT_TERMINAL_ID: ${PAYMENT_TERMINAL_ID}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
 
-  #   networks:
-  #     - aimi-subscription-network
-  #   healthcheck:
-  #     test: [ "CMD", "redis-cli", "ping" ]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
+      PAYMENT_BASE_URL: ${PAYMENT_BASE_URL}
+      PAYMENT_USER: ${PAYMENT_USER}
+      PAYMENT_PASSWORD: ${PAYMENT_PASSWORD}
+      PAYMENT_TERMINAL_ID: ${PAYMENT_TERMINAL_ID}
+
+    networks:
+      - aimi-subscription-network
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
 volumes:
   postgres-data:

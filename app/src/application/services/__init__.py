@@ -5,6 +5,7 @@ from src.application.services.subscription_service import SubscriptionService
 from src.application.services.visit_service import VisitService
 from src.application.services.payment_service import PaymentService
 from src.application.services.review_service import ReviewService
+from src.application.services.child_service import ChildService
 
 __all__ = [
     "UserService",
@@ -14,4 +15,5 @@ __all__ = [
     "VisitService",
     "PaymentService",
     "ReviewService",
+    "ChildService",
 ]

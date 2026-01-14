@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from dishka import FromDishka
 from loguru import logger
 
-from src.application.interfaces.services import ICenterService, IUserService
+from src.application.interfaces.services import ICenterService, IUserService, ISubscriptionService
 from src.infrastructure.persistence.repositories import CityRepository, CategoryRepository
 from src.presentation.keyboards.inline_keyboards import get_cities_keyboard, get_categories_keyboard
 from src.presentation.states.partner_states import PartnerRegistrationStates, CourseManagementStates, TeacherManagementStates

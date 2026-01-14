@@ -47,7 +47,7 @@ async def child_selected_for_subscription(
     await callback.answer()
 
 
-@router.callback_query(F.data.startswith("city_"), SearchStates.selecting_child_for_subscription)
+@router.callback_query(F.data.startswith("city_"))
 async def city_selected_for_child(
     callback: CallbackQuery,
     state: FSMContext,
@@ -65,7 +65,7 @@ async def city_selected_for_child(
     await callback.answer()
 
 
-@router.callback_query(F.data.startswith("category_"), SearchStates.selecting_child_for_subscription)
+@router.callback_query(F.data.startswith("category_"))
 async def category_selected_for_child(
     callback: CallbackQuery,
     state: FSMContext,
