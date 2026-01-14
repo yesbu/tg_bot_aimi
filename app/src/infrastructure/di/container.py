@@ -1,15 +1,15 @@
 from dishka import make_async_container, AsyncContainer
 
-from src.infrastructure.di.providers import (
-    DatabaseProvider,
-    RepositoryProvider,
-    ServiceProvider,
-)
+from src.infrastructure.di.providers.database import DatabaseProvider
+from src.infrastructure.di.providers.repository import RepositoryProvider
+from src.infrastructure.di.providers.service import ServiceProvider
+from src.infrastructure.di.providers.cache import CacheProvider
 
 
 def create_container() -> AsyncContainer:
-    container = make_async_container(
+    return make_async_container(
         DatabaseProvider(),
+        CacheProvider(),
         RepositoryProvider(),
         ServiceProvider(),
     )

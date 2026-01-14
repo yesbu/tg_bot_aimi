@@ -72,3 +72,39 @@ class SubscriptionService(ISubscriptionService):
         
         subscription.use_lesson()
         return await self._sub_repo.update_subscription(subscription)
+    
+    async def create_subscription_for_course(
+        self,
+        user_id: int,
+        course_id: int,
+        tariff: str,
+        child_id: int | None = None,
+    ) -> Subscription:
+        logger.info(f"Creating subscription for user_id={user_id}, course_id={course_id}, tariff={tariff}")
+        
+        qr_code = str(uuid.uuid4())
+        
+        lessons_map = {
+            "4": 4,
+            "8": 8,
+            "unlimited": 999
+        }
+        lessons_total = lessons_map.get(tariff, 8)
+        
+        return await self._sub_repo.create_subscription_for_course(
+            user_id=user_id,
+            course_id=course_id,
+            qr_code=qr_code,
+            lessons_total=lessons_total,
+            child_id=child_id,
+        )
+    
+    async def update_qr_code(self, subscription_id: int, qr_code: str) -> Subscription:
+        logger.info(f"Updating QR code for subscription_id={subscription_id}")
+        subscription = await self._sub_repo.get_subscription_by_id(subscription_id)
+        
+        if not subscription:
+            raise ValueError(f"Subscription {subscription_id} not found")
+        
+        subscription.qr_code = qr_code
+        return await self._sub_repo.update_subscription(subscription)

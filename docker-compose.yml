@@ -1,0 +1,80 @@
+services:
+  database:
+    container_name: aimi-subscription-database
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    networks:
+      - aimi-subscription-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    container_name: aimi-subscription-redis
+    image: redis:latest
+    restart: always
+    ports:
+      - "6380:6379"
+    networks:
+      - aimi-subscription-network
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # bot:
+  #   container_name: aimi-subscription-bot
+  #   build:
+  #     context: ./app
+  #     dockerfile: Dockerfile
+  #   restart: always
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     POSTGRES_USER: ${POSTGRES_USER}
+  #     POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  #     POSTGRES_DB: ${POSTGRES_DB}
+  #     POSTGRES_HOST: ${POSTGRES_HOST}
+  #     POSTGRES_PORT: ${POSTGRES_PORT}
+
+  #     REDIS_HOST: ${REDIS_HOST}
+  #     REDIS_PORT: ${REDIS_PORT}
+  #     REDIS_DB: ${REDIS_DB}
+  #     REDIS_PASSWORD: ${REDIS_PASSWORD}
+
+  #     TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+
+  #     PAYMENT_BASE_URL: ${PAYMENT_BASE_URL}
+  #     PAYMENT_USER: ${PAYMENT_USER}
+  #     PAYMENT_PASSWORD: ${PAYMENT_PASSWORD}
+  #     PAYMENT_TERMINAL_ID: ${PAYMENT_TERMINAL_ID}
+
+  #   networks:
+  #     - aimi-subscription-network
+  #   healthcheck:
+  #     test: [ "CMD", "redis-cli", "ping" ]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+volumes:
+  postgres-data:
+  redis-data:
+
+
+networks:
+  aimi-subscription-network:
+    name: aimi-subscription-network
+    driver: bridge

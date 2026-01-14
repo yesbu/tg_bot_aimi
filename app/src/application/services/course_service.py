@@ -25,16 +25,16 @@ class CourseService(ICourseService):
     
     async def search_courses(
         self,
-        city: str | None = None,
-        category: str | None = None,
+        city_id: int | None = None,
+        category_id: int | None = None,
         age: int | None = None,
         limit: int | None = None,
         offset: int | None = None
     ) -> Sequence[Course]:
-        logger.info(f"Searching courses: city={city}, category={category}, age={age}")
+        logger.info(f"Searching courses: city_id={city_id}, category_id={category_id}, age={age}")
         return await self._course_repo.get_by_filters(
-            city=city,
-            category=category,
+            city_id=city_id,
+            category_id=category_id,
             age=age,
             limit=limit,
             offset=offset,

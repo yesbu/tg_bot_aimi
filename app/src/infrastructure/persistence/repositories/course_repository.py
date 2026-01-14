@@ -33,23 +33,35 @@ class CourseRepository(ICourseRepository):
     
     async def get_by_filters(
         self,
-        city: str | None = None,
-        category: str | None = None,
+        city_id: int | None = None,
+        category_id: int | None = None,
         age: int | None = None,
         limit: int | None = None,
         offset: int | None = None
     ) -> Sequence[Course]:
-        logger.debug(f"Getting courses with filters")
+        logger.debug(f"Getting courses with filters: city_id={city_id}, category_id={category_id}")
         query = (
             select(CourseModel)
             .join(CenterModel, CourseModel.center_id == CenterModel.id)
             .where(CenterModel.status == CenterStatus.APPROVED)
         )
         
-        if city:
-            query = query.where(CenterModel.city == city)
-        if category:
-            query = query.where(CourseModel.category == category)
+        if city_id:
+            from src.infrastructure.persistence.models import CityTranslation
+            city_query = select(CityTranslation.name).where(CityTranslation.city_id == city_id, CityTranslation.language_id == 1)
+            city_result = await self._session.execute(city_query)
+            city_name = city_result.scalar_one_or_none()
+            if city_name:
+                query = query.where(CenterModel.city == city_name)
+        
+        if category_id:
+            from src.infrastructure.persistence.models import CourseCategoryTranslation
+            cat_query = select(CourseCategoryTranslation.name).where(CourseCategoryTranslation.category_id == category_id, CourseCategoryTranslation.language_id == 1)
+            cat_result = await self._session.execute(cat_query)
+            cat_name = cat_result.scalar_one_or_none()
+            if cat_name:
+                query = query.where(CourseModel.category == cat_name)
+        
         if age:
             query = query.where(
                 (CourseModel.age_min.is_(None) | (CourseModel.age_min <= age)) &

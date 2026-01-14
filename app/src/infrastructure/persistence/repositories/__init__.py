@@ -7,6 +7,8 @@ from src.infrastructure.persistence.repositories.visit_repository import VisitRe
 from src.infrastructure.persistence.repositories.payment_repository import PaymentRepository
 from src.infrastructure.persistence.repositories.teacher_repository import TeacherRepository
 from src.infrastructure.persistence.repositories.review_repository import ReviewRepository
+from src.infrastructure.persistence.repositories.city_repository import CityRepository
+from src.infrastructure.persistence.repositories.category_repository import CategoryRepository
 
 __all__ = [
     "UserRepository",
@@ -18,4 +20,6 @@ __all__ = [
     "PaymentRepository",
     "TeacherRepository",
     "ReviewRepository",
+    "CityRepository",
+    "CategoryRepository",
 ]

@@ -45,3 +45,17 @@ class ISubscriptionService(ABC):
     @abstractmethod
     async def use_subscription_lesson(self, subscription_id: int) -> Subscription:
         pass
+    
+    @abstractmethod
+    async def create_subscription_for_course(
+        self,
+        user_id: int,
+        course_id: int,
+        tariff: str,
+        child_id: int | None = None,
+    ) -> Subscription:
+        pass
+    
+    @abstractmethod
+    async def update_qr_code(self, subscription_id: int, qr_code: str) -> Subscription:
+        pass

@@ -1,13 +1,14 @@
 from pydantic import Field, computed_field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pathlib import Path
 
 
 class DatabaseSettings(BaseSettings):
     POSTGRES_USER: str = Field(default="postgres", description="PostgreSQL username")
-    POSTGRES_PASSWORD: str = Field(default="password", description="PostgreSQL password")
+    POSTGRES_PASSWORD: str = Field(default="postgres", description="PostgreSQL password")
     POSTGRES_HOST: str = Field(default="localhost", description="PostgreSQL host")
-    POSTGRES_PORT: int = Field(default=5432, ge=1024, le=65535)
-    POSTGRES_DB: str = Field(default="aimi_database", description="Database name")
+    POSTGRES_PORT: int = Field(default=5433, ge=1024, le=65535)
+    POSTGRES_DB: str = Field(default="aimi_subscription", description="Database name")
 
     @computed_field
     @property
@@ -32,6 +33,22 @@ class RedisSettings(BaseSettings):
             return f"redis://:{self.REDIS_PASSWORD}@{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
         
         return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
+    
+    @property
+    def host(self) -> str:
+        return self.REDIS_HOST
+    
+    @property
+    def port(self) -> int:
+        return self.REDIS_PORT
+    
+    @property
+    def db(self) -> int:
+        return self.REDIS_DB
+    
+    @property
+    def password(self) -> str | None:
+        return self.REDIS_PASSWORD
 
 
 
@@ -47,7 +64,7 @@ class PaymentSettings(BaseSettings):
 
 
 class TelegramSettings(BaseSettings):
-    TELEGRAM_BOT_TOKEN: str = Field(description="Telegram Bot API token")
+    TELEGRAM_BOT_TOKEN: str = Field(description="Telegram Bot API token", default="8478053802:AAGnM34vp6mAyDNyuXfxkj3kqxcoQoRRArc")
 
     @field_validator("TELEGRAM_BOT_TOKEN")
     @classmethod
@@ -56,18 +73,14 @@ class TelegramSettings(BaseSettings):
             raise ValueError("Invalid Telegram bot token format")
         return v
 
-class AdminPanelSettings(BaseSettings):
-    ADMIN_PANEL_USERNAME: str = Field(description="Admin panel username")
-    ADMIN_PANEL_PASSWORD: str = Field(description="Admin panel password")
-
 class Settings(BaseSettings):
     database: DatabaseSettings = Field(default_factory=DatabaseSettings)
     redis: RedisSettings = Field(default_factory=RedisSettings)
     telegram: TelegramSettings = Field(default_factory=TelegramSettings)
     payment: PaymentSettings = Field(default_factory=PaymentSettings)
-    admin_panel: AdminPanelSettings = Field(default_factory=AdminPanelSettings)
 
     model_config = SettingsConfigDict(
+        env_file=str(Path(__file__).parent / ".env"),
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore"
@@ -75,3 +88,4 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+

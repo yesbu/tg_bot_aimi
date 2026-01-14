@@ -19,6 +19,9 @@ from src.infrastructure.persistence.repositories.subscription_repository import 
 from src.infrastructure.persistence.repositories.visit_repository import VisitRepository
 from src.infrastructure.persistence.repositories.payment_repository import PaymentRepository
 from src.infrastructure.persistence.repositories.review_repository import ReviewRepository
+from src.infrastructure.persistence.repositories.city_repository import CityRepository
+from src.infrastructure.persistence.repositories.category_repository import CategoryRepository
+from src.infrastructure.cache import ICacheClient
 
 
 class RepositoryProvider(Provider):
@@ -53,3 +56,11 @@ class RepositoryProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def provide_review_repository(self, session: AsyncSession) -> IReviewRepository:
         return ReviewRepository(session)
+    
+    @provide(scope=Scope.REQUEST)
+    def provide_city_repository(self, session: AsyncSession, cache: ICacheClient) -> CityRepository:
+        return CityRepository(session, cache)
+    
+    @provide(scope=Scope.REQUEST)
+    def provide_category_repository(self, session: AsyncSession, cache: ICacheClient) -> CategoryRepository:
+        return CategoryRepository(session, cache)
