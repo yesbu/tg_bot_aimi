@@ -6,7 +6,7 @@ from dishka import FromDishka
 from loguru import logger
 
 from src.application.interfaces.services import IUserService
-from src.presentation.keyboards.reply_keyboards import get_child_menu
+from src.presentation.bot.keyboards.reply_keyboards import get_child_menu
 
 
 router = Router()

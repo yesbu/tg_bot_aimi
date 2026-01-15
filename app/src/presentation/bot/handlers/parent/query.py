@@ -7,14 +7,14 @@ from loguru import logger
 from src.application.services.child_service import ChildService
 from src.application.interfaces.services import ICourseService, ISubscriptionService
 from src.infrastructure.persistence.repositories import CityRepository, CategoryRepository
-from src.presentation.keyboards.inline_keyboards import (
+from src.presentation.bot.keyboards.inline_keyboards import (
     get_search_params_keyboard,
     get_cities_keyboard,
     get_categories_keyboard,
     get_course_keyboard,
     get_tariff_keyboard
 )
-from src.presentation.states import SearchStates
+from src.presentation.bot.states import SearchStates
 from src.infrastructure.utils import generate_subscription_qr
 
 

@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from dishka import FromDishka
 
 from src.infrastructure.persistence.repositories import CityRepository
-from src.presentation.states.partner_states import PartnerRegistrationStates
+from src.presentation.bot.states.partner_states import PartnerRegistrationStates
 
 
 router = Router()

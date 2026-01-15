@@ -5,7 +5,7 @@ from dishka import FromDishka
 from loguru import logger
 
 from src.application.interfaces.services import ICenterService
-from src.presentation.states.admin_states import AdminModerationStates
+from src.presentation.bot.states.admin_states import AdminModerationStates
 
 
 router = Router()

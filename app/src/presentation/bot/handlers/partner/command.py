@@ -6,7 +6,7 @@ from dishka import FromDishka
 from loguru import logger
 
 from src.application.interfaces.services import IUserService
-from src.presentation.keyboards.reply_keyboards import get_admin_menu
+from src.presentation.bot.keyboards.reply_keyboards import get_partner_menu
 
 
 router = Router()
@@ -20,7 +20,7 @@ async def cmd_start(
 ):
     await state.clear()
     
-    logger.info(f"Processing /start from admin {message.from_user.id}")
+    logger.info(f"Processing /start from partner {message.from_user.id}")
     
     telegram_id = message.from_user.id
     username = message.from_user.username
@@ -38,11 +38,11 @@ async def cmd_start(
     
     await message.answer(
         f"👋 Добро пожаловать, {full_name}!\n\n"
-        "Панель администратора.",
-        reply_markup=get_admin_menu()
+        "Управляйте вашим образовательным центром.",
+        reply_markup=get_partner_menu()
     )
     
-    logger.info(f"Successfully processed /start for admin {telegram_id}")
+    logger.info(f"Successfully processed /start for partner {telegram_id}")
 
 
 @router.message(Command("cancel"))
@@ -57,7 +57,7 @@ async def cmd_cancel(
         await message.answer(
             "❌ Операция отменена.\n\n"
             "Выберите действие из меню.",
-            reply_markup=get_admin_menu()
+            reply_markup=get_partner_menu()
         )
     else:
         await message.answer("Нет активной операции для отмены.")

@@ -6,8 +6,8 @@ from loguru import logger
 
 from src.application.services.child_service import ChildService
 from src.application.interfaces.services import ISubscriptionService
-from src.presentation.keyboards.inline_keyboards import get_children_keyboard
-from src.presentation.states.parent_states import ParentStates
+from src.presentation.bot.keyboards.inline_keyboards import get_children_keyboard
+from src.presentation.bot.states.parent_states import ParentStates
 
 
 router = Router()

@@ -6,8 +6,8 @@ from loguru import logger
 
 from src.application.interfaces.services import ICenterService, IUserService, ISubscriptionService
 from src.infrastructure.persistence.repositories import CityRepository, CategoryRepository
-from src.presentation.keyboards.inline_keyboards import get_cities_keyboard, get_categories_keyboard
-from src.presentation.states.partner_states import PartnerRegistrationStates, CourseManagementStates, TeacherManagementStates
+from src.presentation.bot.keyboards.inline_keyboards import get_cities_keyboard, get_categories_keyboard
+from src.presentation.bot.states.partner_states import PartnerRegistrationStates, CourseManagementStates, TeacherManagementStates
 
 
 router = Router()

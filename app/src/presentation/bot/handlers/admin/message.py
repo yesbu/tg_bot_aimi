@@ -5,8 +5,8 @@ from dishka import FromDishka
 from loguru import logger
 
 from src.application.interfaces.services import ICenterService, IUserService
-from src.presentation.keyboards.inline_keyboards import get_moderation_keyboard
-from src.presentation.states.admin_states import BroadcastStates
+from src.presentation.bot.keyboards.inline_keyboards import get_moderation_keyboard
+from src.presentation.bot.states.admin_states import BroadcastStates
 
 
 router = Router()

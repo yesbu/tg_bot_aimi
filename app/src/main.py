@@ -7,7 +7,7 @@ from loguru import logger
 
 from src.settings import settings
 from src.infrastructure.di import create_container
-from src.presentation.handlers import (
+from src.presentation.bot.handlers import (
     user_command_router,
     user_message_router,
     user_query_router,
@@ -23,7 +23,7 @@ from src.presentation.handlers import (
     admin_message_router,
     admin_query_router
 )
-from src.presentation.middleware import ErrorHandlerMiddleware, LoggingMiddleware
+from src.presentation.bot.middleware import ErrorHandlerMiddleware, LoggingMiddleware
 
 
 async def on_startup():
