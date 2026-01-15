@@ -24,16 +24,16 @@ from src.infrastructure.payment.airbapay.exceptions import (
 )
 
 
-class AirbaPayClient(IPaymentGateway):
-    BASE_URL = "https://ps.airbapay.kz/acquiring-api"
-    
+class AirbaPayClient(IPaymentGateway):    
     def __init__(
         self,
         username: str,
         password: str,
         terminal_id: str,
         timeout: int = 30,
+        base_url: str = "https://sps.airbapay.kz/acquiring-api",
     ):
+        self._base_url = base_url
         self._username = username
         self._password = password
         self._terminal_id = terminal_id
@@ -51,7 +51,7 @@ class AirbaPayClient(IPaymentGateway):
         
         try:
             response = await self._client.post(
-                f"{self.BASE_URL}/api/v1/auth/sign-in",
+                f"{self._base_url}/api/v1/auth/sign-in",
                 json={
                     "user": self._username,
                     "password": self._password,
@@ -91,7 +91,7 @@ class AirbaPayClient(IPaymentGateway):
             "Content-Type": "application/json",
         }
         
-        url = f"{self.BASE_URL}{endpoint}"
+        url = f"{self._base_url}{endpoint}"
         
         try:
             response = await self._client.request(
