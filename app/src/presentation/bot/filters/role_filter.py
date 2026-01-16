@@ -1,3 +1,4 @@
+from typing import Any
 from aiogram.filters import BaseFilter
 from aiogram.types import Message, CallbackQuery, TelegramObject
 from loguru import logger
@@ -14,9 +15,16 @@ class RoleFilter(BaseFilter):
     async def __call__(
         self,
         event: TelegramObject,
-        user_service: IUserService,
+        **kwargs: Any,
     ) -> bool:
         telegram_id = self._get_telegram_id(event)
+
+        container = kwargs.get("dishka_container")
+        if container is None:
+            logger.error("Dishka container not found in filter kwargs")
+            return False
+
+        user_service: IUserService = await container.get(IUserService)
 
         if telegram_id is None:
             logger.warning("Could not extract telegram_id from event")
