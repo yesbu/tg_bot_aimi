@@ -2,8 +2,8 @@ from enum import Enum
 
 
 class Role(Enum):
-    ADMIN = "admin"
-    USER = "user"
-    PARENT = "parent"
-    CHILD = "child"
-    PARTNER = "partner"
+    ADMIN = "ADMIN"
+    USER = "USER"
+    PARENT = "PARENT"
+    CHILD = "CHILD"
+    PARTNER = "PARTNER"
