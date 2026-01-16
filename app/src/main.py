@@ -23,8 +23,7 @@ from src.presentation.bot.handlers import (
     admin_message_router,
     admin_query_router
 )
-from src.presentation.bot.middleware import ErrorHandlerMiddleware, LoggingMiddleware, RoleFilterMiddleware
-from src.domain.enums import Role
+from src.presentation.bot.middleware import ErrorHandlerMiddleware, LoggingMiddleware
 
 
 async def on_startup():
@@ -61,40 +60,27 @@ async def main():
     
     container = create_container()
     setup_dishka(container, dp, auto_inject=True)
-    
-    user_command_router.message.middleware(RoleFilterMiddleware(Role.USER))
-    user_message_router.message.middleware(RoleFilterMiddleware(Role.USER))
-    user_query_router.callback_query.middleware(RoleFilterMiddleware(Role.USER))
-    
-    parent_command_router.message.middleware(RoleFilterMiddleware(Role.PARENT))
-    parent_message_router.message.middleware(RoleFilterMiddleware(Role.PARENT))
-    parent_query_router.callback_query.middleware(RoleFilterMiddleware(Role.PARENT))
-    
-    child_command_router.message.middleware(RoleFilterMiddleware(Role.CHILD))
-    child_message_router.message.middleware(RoleFilterMiddleware(Role.CHILD))
-    
-    partner_command_router.message.middleware(RoleFilterMiddleware(Role.PARTNER))
-    partner_message_router.message.middleware(RoleFilterMiddleware(Role.PARTNER))
-    partner_query_router.callback_query.middleware(RoleFilterMiddleware(Role.PARTNER))
-    
-    admin_command_router.message.middleware(RoleFilterMiddleware(Role.ADMIN))
-    admin_message_router.message.middleware(RoleFilterMiddleware(Role.ADMIN))
-    admin_query_router.callback_query.middleware(RoleFilterMiddleware(Role.ADMIN))
-        
-    dp.include_router(user_command_router)
-    dp.include_router(user_message_router)
-    dp.include_router(user_query_router)
-    dp.include_router(parent_command_router)
-    dp.include_router(parent_message_router)
-    dp.include_router(parent_query_router)
-    dp.include_router(child_command_router)
-    dp.include_router(child_message_router)
-    dp.include_router(partner_command_router)
-    dp.include_router(partner_message_router)
-    dp.include_router(partner_query_router)
+            
+    # Register routers in order of specificity (most specific roles first)
+    # Admin routers
     dp.include_router(admin_command_router)
     dp.include_router(admin_message_router)
     dp.include_router(admin_query_router)
+    # Partner routers
+    dp.include_router(partner_command_router)
+    dp.include_router(partner_message_router)
+    dp.include_router(partner_query_router)
+    # Parent routers
+    dp.include_router(parent_command_router)
+    dp.include_router(parent_message_router)
+    dp.include_router(parent_query_router)
+    # Child routers
+    dp.include_router(child_command_router)
+    dp.include_router(child_message_router)
+    # User routers (last - handles new users and USER role)
+    dp.include_router(user_command_router)
+    dp.include_router(user_message_router)
+    dp.include_router(user_query_router)
     
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
