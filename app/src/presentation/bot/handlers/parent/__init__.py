@@ -6,9 +6,9 @@ from src.domain.enums import Role
 
 _middleware = RoleMiddleware(allowed_roles=[Role.PARENT], allow_new_users=False)
 
-command_router.message.middleware(_middleware)
-message_router.message.middleware(_middleware)
-query_router.callback_query.middleware(_middleware)
+command_router.message.outer_middleware(_middleware)
+message_router.message.outer_middleware(_middleware)
+query_router.callback_query.outer_middleware(_middleware)
 
 
 __all__ = ["command_router", "message_router", "query_router"]
