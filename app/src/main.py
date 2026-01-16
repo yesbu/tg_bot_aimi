@@ -23,7 +23,8 @@ from src.presentation.bot.handlers import (
     admin_message_router,
     admin_query_router
 )
-from src.presentation.bot.middleware import ErrorHandlerMiddleware, LoggingMiddleware
+from src.presentation.bot.middleware import ErrorHandlerMiddleware, LoggingMiddleware, RoleFilterMiddleware
+from src.domain.enums import Role
 
 
 async def on_startup():
