@@ -21,4 +21,9 @@ class DatabaseProvider(Provider):
         self, session_factory: async_sessionmaker[AsyncSession]
     ) -> AsyncIterable[AsyncSession]:
         async with session_factory() as session:
-            yield session
+            try:
+                yield session
+                await session.commit()
+            except Exception:
+                await session.rollback()
+                raise
