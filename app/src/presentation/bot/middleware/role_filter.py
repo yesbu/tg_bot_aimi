@@ -2,6 +2,7 @@ from typing import Callable, Dict, Any, Awaitable
 from aiogram import BaseMiddleware
 from aiogram.types import Message, CallbackQuery, TelegramObject
 from dishka.integrations.aiogram import CONTAINER_NAME
+from loguru import logger
 
 from src.application.interfaces.services import IUserService
 from src.domain.enums import Role
@@ -20,6 +21,7 @@ class RoleFilterMiddleware(BaseMiddleware):
     ) -> Any:
         container = data.get(CONTAINER_NAME)
         if not container:
+            logger.warning(f"RoleFilter({self.allowed_role.value}): No container found")
             return None
         
         if isinstance(event, (Message, CallbackQuery)):
@@ -29,8 +31,11 @@ class RoleFilterMiddleware(BaseMiddleware):
                 user_service = await request_container.get(IUserService)
                 user = await user_service.get_user_by_telegram_id(telegram_id)
                 
+                logger.debug(f"RoleFilter({self.allowed_role.value}): Checking user {telegram_id}, user exists: {user is not None}, user role: {user.role.value if user else 'None'}")
+                
                 if not user:
                     if self.allowed_role == Role.USER:
+                        logger.info(f"RoleFilter({self.allowed_role.value}): Creating new user {telegram_id}")
                         username = event.from_user.username
                         first_name = event.from_user.first_name
                         last_name = event.from_user.last_name
@@ -42,9 +47,13 @@ class RoleFilterMiddleware(BaseMiddleware):
                             last_name=last_name
                         )
                     else:
+                        logger.debug(f"RoleFilter({self.allowed_role.value}): User not found, blocking")
                         return None
                 
                 if user.role == self.allowed_role:
+                    logger.info(f"RoleFilter({self.allowed_role.value}): Role match! Allowing handler")
                     return await handler(event, data)
+                else:
+                    logger.debug(f"RoleFilter({self.allowed_role.value}): Role mismatch ({user.role.value} != {self.allowed_role.value}), blocking")
         
         return None
