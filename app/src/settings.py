@@ -4,11 +4,11 @@ from pathlib import Path
 
 
 class DatabaseSettings(BaseSettings):
-    POSTGRES_USER: str = Field(default="postgres", description="PostgreSQL username")
-    POSTGRES_PASSWORD: str = Field(default="postgres", description="PostgreSQL password")
-    POSTGRES_HOST: str = Field(default="localhost", description="PostgreSQL host")
-    POSTGRES_PORT: int = Field(default=5433, ge=1024, le=65535)
-    POSTGRES_DB: str = Field(default="aimi_subscription", description="Database name")
+    POSTGRES_USER: str = Field(..., description="PostgreSQL username")
+    POSTGRES_PASSWORD: str = Field(..., description="PostgreSQL password")
+    POSTGRES_HOST: str = Field(..., description="PostgreSQL host")
+    POSTGRES_PORT: int = Field(..., ge=1024, le=65535)
+    POSTGRES_DB: str = Field(..., description="Database name")
 
     @computed_field
     @property
@@ -21,8 +21,8 @@ class DatabaseSettings(BaseSettings):
 
 
 class RedisSettings(BaseSettings):
-    REDIS_HOST: str = Field(default="localhost", description="Redis host")
-    REDIS_PORT: int = Field(default=6379, ge=1024, le=65535)
+    REDIS_HOST: str = Field(..., description="Redis host")
+    REDIS_PORT: int = Field(..., ge=1024, le=65535)
     REDIS_DB: int = Field(default=0, ge=0, le=15)
     REDIS_PASSWORD: str | None = Field(default=None, description="Redis password (optional)")
 
@@ -58,13 +58,13 @@ class PaymentSettings(BaseSettings):
         description="Payment gateway base URL"
     )
 
-    PAYMENT_USER: str = Field(default="Test-AMANATGENERATION")
-    PAYMENT_PASSWORD: str = Field(default="awz4f~pz-v3!qpNd")
-    PAYMENT_TERMINAL_ID: str = Field(default="67b32a6bc908cc488ae9c3ed")
+    PAYMENT_USER: str = Field(..., description="Payment gateway username")
+    PAYMENT_PASSWORD: str = Field(..., description="Payment gateway password")
+    PAYMENT_TERMINAL_ID: str = Field(..., description="Payment gateway terminal ID")
 
 
 class TelegramSettings(BaseSettings):
-    TELEGRAM_BOT_TOKEN: str = Field(description="Telegram Bot API token", default="8478053802:AAGnM34vp6mAyDNyuXfxkj3kqxcoQoRRArc")
+    TELEGRAM_BOT_TOKEN: str = Field(..., description="Telegram Bot API token")
 
     @field_validator("TELEGRAM_BOT_TOKEN")
     @classmethod

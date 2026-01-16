@@ -8,12 +8,13 @@ from loguru import logger
 from src.application.interfaces.services import IUserService
 from src.presentation.bot.keyboards.reply_keyboards import get_parent_menu
 from src.presentation.bot.keyboards.inline_keyboards import get_parent_start_keyboard
-
+from src.presentation.bot.filters.role_filter import RoleFilter
+from src.domain.enums import Role
 
 router = Router()
 
 
-@router.message(Command("start"))
+@router.message(Command("start"), RoleFilter(Role.PARENT))
 async def cmd_start(
     message: Message,
     state: FSMContext,
@@ -46,7 +47,7 @@ async def cmd_start(
     logger.info(f"Successfully processed /start for parent {telegram_id}")
 
 
-@router.message(Command("cancel"))
+@router.message(Command("cancel"), RoleFilter(Role.PARENT))
 async def cmd_cancel(
     message: Message,
     state: FSMContext
