@@ -1,12 +1,12 @@
 from .command import router as command_router
 from .message import router as message_router
-from src.presentation.bot.middleware import RoleMiddleware
+from src.presentation.bot.filters import RoleFilter
 from src.domain.enums import Role
 
-_middleware = RoleMiddleware(allowed_roles=[Role.CHILD], allow_new_users=False)
+_filter = RoleFilter(Role.CHILD)
 
-command_router.message.outer_middleware(_middleware)
-message_router.message.outer_middleware(_middleware)
+command_router.message.filter(_filter)
+message_router.message.filter(_filter)
 
 
 __all__ = ["command_router", "message_router"]
