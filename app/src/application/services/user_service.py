@@ -1,4 +1,5 @@
 from loguru import logger
+from sqlalchemy.exc import IntegrityError
 
 from src.application.interfaces.services import IUserService
 from src.application.interfaces.repositories import IUserRepository
@@ -23,12 +24,19 @@ class UserService(IUserService):
         if user:
             return user
         
-        return await self._user_repo.create(
-            telegram_id=telegram_id,
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-        )
+        try:
+            return await self._user_repo.create(
+                telegram_id=telegram_id,
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+            )
+        except IntegrityError:
+            logger.warning(f"Race condition detected for telegram_id={telegram_id}, fetching existing user")
+            user = await self._user_repo.get_by_telegram_id(telegram_id)
+            if user:
+                return user
+            raise
     
     async def get_user_by_telegram_id(self, telegram_id: int) -> User | None:
         logger.info(f"Getting user by telegram_id={telegram_id}")
