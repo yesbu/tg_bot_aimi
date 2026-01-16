@@ -29,7 +29,22 @@ class RoleFilterMiddleware(BaseMiddleware):
                 user_service = await request_container.get(IUserService)
                 user = await user_service.get_user_by_telegram_id(telegram_id)
                 
-                if user and user.role == self.allowed_role:
+                if not user:
+                    if self.allowed_role == Role.USER:
+                        username = event.from_user.username
+                        first_name = event.from_user.first_name
+                        last_name = event.from_user.last_name
+                        
+                        user = await user_service.get_or_create_user(
+                            telegram_id=telegram_id,
+                            username=username,
+                            first_name=first_name,
+                            last_name=last_name
+                        )
+                    else:
+                        return None
+                
+                if user.role == self.allowed_role:
                     return await handler(event, data)
         
         return None
