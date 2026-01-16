@@ -24,7 +24,7 @@ async def my_center(
     if not centers:
         await message.answer(
             "🏢 У тебя пока нет зарегистрированных центров.\n\n"
-            "Нажми '➕ Зарегистрировать центр' чтобы начать!"
+            "Нажми '➕ Добавить центр' чтобы начать!"
         )
         return
     
@@ -38,7 +38,7 @@ async def my_center(
         await message.answer(text)
 
 
-@router.message(F.text == "➕ Зарегистрировать центр")
+@router.message(F.text == "➕ Добавить центр")
 async def register_center_start(message: Message, state: FSMContext):
     await message.answer(
         "🏢 Регистрация центра\n\n"
