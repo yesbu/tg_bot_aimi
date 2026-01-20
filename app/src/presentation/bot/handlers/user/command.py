@@ -1,11 +1,11 @@
-from aiogram import Router
+﻿from aiogram import Router
 from aiogram.types import Message
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from dishka import FromDishka
 from loguru import logger
 
-from src.application.interfaces.services import IUserService
+from src.application.use_cases.user import GetOrCreateUserUseCase
 from src.presentation.bot.keyboards.reply_keyboards import get_main_menu
 
 router = Router()
@@ -15,7 +15,7 @@ router = Router()
 async def cmd_start(
     message: Message,
     state: FSMContext,
-    user_service: FromDishka[IUserService]
+    get_or_create_user: FromDishka[GetOrCreateUserUseCase]
 ):
     await state.clear()
     
@@ -26,7 +26,7 @@ async def cmd_start(
     first_name = message.from_user.first_name or "Пользователь"
     last_name = message.from_user.last_name
     
-    user = await user_service.get_or_create_user(
+    user = await get_or_create_user.execute(
         telegram_id=telegram_id,
         username=username,
         first_name=first_name,

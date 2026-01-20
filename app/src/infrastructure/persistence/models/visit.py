@@ -6,7 +6,7 @@ from datetime import datetime
 from src.infrastructure.persistence.models.base import Base
 
 if TYPE_CHECKING:
-    from src.infrastructure.persistence.models.subscription import Subscription
+
     from src.infrastructure.persistence.models.user import User
     from src.infrastructure.persistence.models.child import Child
     from src.infrastructure.persistence.models.center import Center
@@ -20,13 +20,6 @@ class Visit(Base):
         Integer,
         primary_key=True,
         autoincrement=True
-    )
-    
-    subscription_id: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("subscriptions.id", ondelete="CASCADE"),
-        nullable=False,
-        index=True
     )
     
     user_id: Mapped[int] = mapped_column(
@@ -61,12 +54,6 @@ class Visit(Base):
         nullable=False,
         default=datetime.utcnow,
         index=True
-    )
-    
-    subscription: Mapped["Subscription"] = relationship(
-        "Subscription",
-        back_populates="visits",
-        lazy="selectin"
     )
     
     user: Mapped["User"] = relationship(

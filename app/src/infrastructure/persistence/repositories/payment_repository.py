@@ -1,9 +1,9 @@
-from typing import Sequence
+﻿from typing import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from loguru import logger
 
-from src.application.interfaces.repositories import IPaymentRepository
+from src.domain.interfaces.repositories import IPaymentRepository
 from src.domain.entities import Payment, PaymentRefund
 from src.infrastructure.persistence.models.payment import Payment as PaymentModel, PaymentRefund as PaymentRefundModel
 from src.infrastructure.persistence.mappers import PaymentMapper, PaymentRefundMapper

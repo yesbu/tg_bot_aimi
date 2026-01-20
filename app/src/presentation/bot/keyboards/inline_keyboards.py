@@ -1,5 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+from src.domain.entities import SubscriptionPlan
+
 
 def get_search_params_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
@@ -176,3 +178,16 @@ def get_back_keyboard() -> InlineKeyboardMarkup:
             [InlineKeyboardButton(text="🔙 Назад", callback_data="back")]
         ]
     )
+
+
+def get_subscription_plans_keyboard(plans: list[SubscriptionPlan]) -> InlineKeyboardMarkup:
+    keyboard = []
+    
+    for plan in plans:
+        button_text = f"📅 {plan.duration_months} {'месяц' if plan.duration_months == 1 else 'месяца' if plan.duration_months < 5 else 'месяцев'} - {plan.price:,.0f} ₸"
+        keyboard.append([InlineKeyboardButton(
+            text=button_text,
+            callback_data=f"buy_plan_{plan.id}"
+        )])
+    
+    return InlineKeyboardMarkup(inline_keyboard=keyboard)

@@ -1,9 +1,9 @@
-from typing import Sequence
+﻿from typing import Sequence
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from loguru import logger
 
-from src.application.interfaces.repositories import IUserRepository
+from src.domain.interfaces.repositories import IUserRepository
 from src.domain.entities import User
 from src.infrastructure.persistence.models.user import User as UserModel
 from src.infrastructure.persistence.mappers import UserMapper

@@ -1,10 +1,10 @@
-from typing import Sequence
+﻿from typing import Sequence
 from datetime import datetime, timedelta
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from loguru import logger
 
-from src.application.interfaces.repositories import IVisitRepository
+from src.domain.interfaces.repositories import IVisitRepository
 from src.domain.entities import Visit
 from src.infrastructure.persistence.models.visit import Visit as VisitModel
 from src.infrastructure.persistence.mappers import VisitMapper

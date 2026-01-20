@@ -1,9 +1,9 @@
-import json
+﻿import json
 from typing import Any
 from redis.asyncio import Redis
 from loguru import logger
 
-from src.application.interfaces.cache.cache_client import ICacheClient  
+from src.domain.interfaces.cache.cache_client import ICacheClient  
 
 
 class RedisClient(ICacheClient):

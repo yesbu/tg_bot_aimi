@@ -1,6 +1,6 @@
 from .command import router as command_router
 from .message import router as message_router
-from .query import router as query_router
+from .callback import router as query_router
 from src.presentation.bot.filters import RoleFilter
 from src.domain.enums import Role
 

@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:doc.airbapay.kz)",
+      "WebFetch(domain:github.com)"
+    ]
+  }
+}

@@ -8,7 +8,6 @@ from src.domain.enums import Role
 if TYPE_CHECKING:
     from src.infrastructure.persistence.models.child import Child
     from src.infrastructure.persistence.models.center import Center
-    from src.infrastructure.persistence.models.subscription import Subscription
     from src.infrastructure.persistence.models.visit import Visit
     from src.infrastructure.persistence.models.payment import Payment
     from src.infrastructure.persistence.models.review import Review
@@ -73,13 +72,6 @@ class User(TimestampMixin, SoftDeleteMixin, Base):
     centers: Mapped[list["Center"]] = relationship(
         "Center",
         back_populates="partner",
-        cascade="all, delete-orphan",
-        lazy="selectin"
-    )
-    
-    subscriptions: Mapped[list["Subscription"]] = relationship(
-        "Subscription",
-        back_populates="user",
         cascade="all, delete-orphan",
         lazy="selectin"
     )

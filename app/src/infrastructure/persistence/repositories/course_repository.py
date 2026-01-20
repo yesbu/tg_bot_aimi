@@ -1,9 +1,9 @@
-from typing import Sequence
+﻿from typing import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from loguru import logger
 
-from src.application.interfaces.repositories import ICourseRepository
+from src.domain.interfaces.repositories import ICourseRepository
 from src.domain.entities import Course
 from src.infrastructure.persistence.models.course import Course as CourseModel
 from src.infrastructure.persistence.models.center import Center as CenterModel

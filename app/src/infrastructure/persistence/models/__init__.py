@@ -8,7 +8,7 @@ from .child import Child
 from .center import Center
 from .course import Course
 from .teacher import Teacher
-from .subscription import SubscriptionTemplate, Subscription
+from .subscription_plan import SubscriptionPlan
 from .lesson import Lesson
 from .visit import Visit
 from .payment import Payment, PaymentRefund
@@ -30,8 +30,7 @@ __all__ = [
     'Center',
     'Course',
     'Teacher',
-    'SubscriptionTemplate',
-    'Subscription',
+    'SubscriptionPlan',
     'Lesson',
     'Visit',
     'Payment',

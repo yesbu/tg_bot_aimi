@@ -10,20 +10,27 @@ from src.infrastructure.di import create_container
 from src.presentation.bot.handlers import (
     user_command_router,
     user_message_router,
-    user_query_router,
-    parent_command_router,
-    parent_message_router,
-    parent_query_router,
-    child_command_router,
-    child_message_router,
-    partner_command_router,
-    partner_message_router,
-    partner_query_router,
-    admin_command_router,
-    admin_message_router,
-    admin_query_router
+    user_callback_router,
+    # parent_command_router,
+    # parent_message_router,
+    # parent_query_router,
+    # child_command_router,
+    # child_message_router,
+    # partner_command_router,
+    # partner_message_router,
+    # partner_query_router,
+    # admin_command_router,
+    # admin_message_router,
+    # admin_query_router
 )
 from src.presentation.bot.middleware import ErrorHandlerMiddleware, LoggingMiddleware
+from fastapi import FastAPI
+
+
+
+app = FastAPI(
+    title="Aimi Telegram Bot"
+)
 
 
 async def on_startup():
@@ -61,20 +68,20 @@ async def main():
     container = create_container()
     setup_dishka(container, dp, auto_inject=True)
             
-    dp.include_router(admin_command_router)
-    dp.include_router(admin_message_router)
-    dp.include_router(admin_query_router)
-    dp.include_router(partner_command_router)
-    dp.include_router(partner_message_router)
-    dp.include_router(partner_query_router)
-    dp.include_router(parent_command_router)
-    dp.include_router(parent_message_router)
-    dp.include_router(parent_query_router)
-    dp.include_router(child_command_router)
-    dp.include_router(child_message_router)
+    # dp.include_router(admin_command_router)
+    # dp.include_router(admin_message_router)
+    # dp.include_router(admin_query_router)
+    # dp.include_router(partner_command_router)
+    # dp.include_router(partner_message_router)
+    # dp.include_router(partner_query_router)
+    # dp.include_router(parent_command_router)
+    # dp.include_router(parent_message_router)
+    # dp.include_router(parent_query_router)
+    # dp.include_router(child_command_router)
+    # dp.include_router(child_message_router)
     dp.include_router(user_command_router)
     dp.include_router(user_message_router)
-    dp.include_router(user_query_router)
+    dp.include_router(user_callback_router)
     
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)

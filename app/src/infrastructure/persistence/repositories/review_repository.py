@@ -1,9 +1,9 @@
-from typing import Sequence
+﻿from typing import Sequence
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from loguru import logger
 
-from src.application.interfaces.repositories import IReviewRepository
+from src.domain.interfaces.repositories import IReviewRepository
 from src.domain.entities import Review
 from src.infrastructure.persistence.models.review import Review as ReviewModel
 from src.infrastructure.persistence.mappers import ReviewMapper

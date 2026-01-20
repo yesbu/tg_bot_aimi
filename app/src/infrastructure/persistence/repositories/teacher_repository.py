@@ -1,9 +1,9 @@
-from typing import Sequence
+﻿from typing import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from loguru import logger
 
-from src.application.interfaces.repositories.teacher_repository import ITeacherRepository
+from src.domain.interfaces.repositories.teacher_repository import ITeacherRepository
 from src.domain.entities import Teacher
 from src.infrastructure.persistence.models.teacher import Teacher as TeacherModel
 from src.infrastructure.persistence.mappers import TeacherMapper

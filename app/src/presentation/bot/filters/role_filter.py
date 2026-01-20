@@ -1,10 +1,10 @@
-from typing import Any
+﻿from typing import Any
 from aiogram.filters import BaseFilter
 from aiogram.types import Message, CallbackQuery, TelegramObject
 from loguru import logger
 
 from src.domain.enums import Role
-from src.application.interfaces.services import IUserService
+from src.application.use_cases.user import GetUserUseCase
 
 
 class RoleFilter(BaseFilter):
@@ -24,13 +24,13 @@ class RoleFilter(BaseFilter):
             logger.error("Dishka container not found in filter kwargs")
             return False
 
-        user_service: IUserService = await container.get(IUserService)
+        get_user_use_case: GetUserUseCase = await container.get(GetUserUseCase)
 
         if telegram_id is None:
             logger.warning("Could not extract telegram_id from event")
             return False
 
-        user = await user_service.get_user_by_telegram_id(telegram_id)
+        user = await get_user_use_case.execute(telegram_id=telegram_id)
 
         if user is None:
             if self.allow_new_users:

@@ -7,7 +7,7 @@ from src.infrastructure.persistence.models.base import Base, TimestampMixin
 from src.domain.enums import PaymentStatus
 
 if TYPE_CHECKING:
-    from src.infrastructure.persistence.models.subscription import Subscription
+
     from src.infrastructure.persistence.models.user import User
 
 
@@ -18,13 +18,6 @@ class Payment(TimestampMixin, Base):
         Integer,
         primary_key=True,
         autoincrement=True
-    )
-    
-    subscription_id: Mapped[int | None] = mapped_column(
-        Integer,
-        ForeignKey("subscriptions.id", ondelete="SET NULL"),
-        nullable=True,
-        index=True
     )
     
     user_id: Mapped[int] = mapped_column(
@@ -91,12 +84,6 @@ class Payment(TimestampMixin, Base):
     processed_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True),
         nullable=True
-    )
-    
-    subscription: Mapped["Subscription | None"] = relationship(
-        "Subscription",
-        back_populates="payments",
-        lazy="selectin"
     )
     
     user: Mapped["User"] = relationship(

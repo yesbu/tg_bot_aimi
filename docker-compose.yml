@@ -59,7 +59,8 @@ services:
       PAYMENT_USER: ${PAYMENT_USER}
       PAYMENT_PASSWORD: ${PAYMENT_PASSWORD}
       PAYMENT_TERMINAL_ID: ${PAYMENT_TERMINAL_ID}
-
+    volumes:
+      - ./app/src:/app/src
     networks:
       - aimi-subscription-network
     depends_on:

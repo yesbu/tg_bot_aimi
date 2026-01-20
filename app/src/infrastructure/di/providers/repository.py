@@ -1,12 +1,12 @@
-from dishka import Provider, Scope, provide
+﻿from dishka import Provider, Scope, provide
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.application.interfaces.repositories import (
+from src.domain.interfaces.repositories import (
     IUserRepository,
     IChildRepository,
     ICenterRepository,
     ICourseRepository,
-    ISubscriptionRepository,
+    ISubscriptionPlanRepository,
     IVisitRepository,
     IPaymentRepository,
     IReviewRepository,
@@ -15,7 +15,7 @@ from src.infrastructure.persistence.repositories.user_repository import UserRepo
 from src.infrastructure.persistence.repositories.child_repository import ChildRepository
 from src.infrastructure.persistence.repositories.center_repository import CenterRepository
 from src.infrastructure.persistence.repositories.course_repository import CourseRepository
-from src.infrastructure.persistence.repositories.subscription_repository import SubscriptionRepository
+from src.infrastructure.persistence.repositories.subscription_plan_repository import SubscriptionPlanRepository
 from src.infrastructure.persistence.repositories.visit_repository import VisitRepository
 from src.infrastructure.persistence.repositories.payment_repository import PaymentRepository
 from src.infrastructure.persistence.repositories.review_repository import ReviewRepository
@@ -42,8 +42,8 @@ class RepositoryProvider(Provider):
         return CourseRepository(session)
     
     @provide(scope=Scope.REQUEST)
-    def provide_subscription_repository(self, session: AsyncSession) -> ISubscriptionRepository:
-        return SubscriptionRepository(session)
+    def provide_subscription_plan_repository(self, session: AsyncSession) -> ISubscriptionPlanRepository:
+        return SubscriptionPlanRepository(session)
     
     @provide(scope=Scope.REQUEST)
     def provide_visit_repository(self, session: AsyncSession) -> IVisitRepository:
@@ -58,9 +58,9 @@ class RepositoryProvider(Provider):
         return ReviewRepository(session)
     
     @provide(scope=Scope.REQUEST)
-    def provide_city_repository(self, session: AsyncSession, cache: ICacheClient) -> CityRepository:
-        return CityRepository(session, cache)
+    def provide_city_repository(self, session: AsyncSession) -> CityRepository:
+        return CityRepository(session)
     
     @provide(scope=Scope.REQUEST)
-    def provide_category_repository(self, session: AsyncSession, cache: ICacheClient) -> CategoryRepository:
-        return CategoryRepository(session, cache)
+    def provide_category_repository(self, session: AsyncSession) -> CategoryRepository:
+        return CategoryRepository(session)
