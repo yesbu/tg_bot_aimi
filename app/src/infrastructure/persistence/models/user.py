@@ -5,6 +5,10 @@ from typing import TYPE_CHECKING
 from src.infrastructure.persistence.models.base import Base, TimestampMixin, SoftDeleteMixin
 from src.domain.enums import Role
 
+if TYPE_CHECKING:
+    from src.infrastructure.persistence.models.payment import Payment
+    from src.infrastructure.persistence.models.subscription import Subscription
+
 
 class User(TimestampMixin, SoftDeleteMixin, Base):
     __tablename__ = "users"
@@ -48,6 +52,18 @@ class User(TimestampMixin, SoftDeleteMixin, Base):
         default=Role.USER,
         server_default=Role.USER.value,
         index=True
+    )
+    
+    payments: Mapped[list["Payment"]] = relationship(
+        "Payment",
+        back_populates="user",
+        cascade="all, delete-orphan"
+    )
+    
+    subscriptions: Mapped[list["Subscription"]] = relationship(
+        "Subscription",
+        back_populates="user",
+        cascade="all, delete-orphan"
     )
     
 

@@ -5,6 +5,8 @@ from .country import Country, CountryTranslation
 from .city import City, CityTranslation
 from .course_category import CourseCategory, CourseCategoryTranslation
 from .subscription_plan import SubscriptionPlan
+from .payment import Payment
+from .subscription import Subscription
 
 __all__ = [
     'Base',
@@ -19,5 +21,6 @@ __all__ = [
     'CourseCategory',
     'CourseCategoryTranslation',
     'SubscriptionPlan',
-
+    'Payment',
+    'Subscription',
 ]

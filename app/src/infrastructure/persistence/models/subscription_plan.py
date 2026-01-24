@@ -4,6 +4,8 @@ from typing import TYPE_CHECKING
 
 from src.infrastructure.persistence.models.base import Base, TimestampMixin
 
+if TYPE_CHECKING:
+    from src.infrastructure.persistence.models.subscription import Subscription
 
 
 class SubscriptionPlan(TimestampMixin, Base):
@@ -58,5 +60,10 @@ class SubscriptionPlan(TimestampMixin, Base):
         nullable=False,
         default=0,
         comment="Порядок отображения"
+    )
+    
+    subscriptions: Mapped[list["Subscription"]] = relationship(
+        "Subscription",
+        back_populates="subscription_plan"
     )
 

@@ -7,7 +7,8 @@ from src.application.use_cases.subscription import BuySubscriptionPlanUseCase
 from src.application.use_cases.city import GetAllCitiesUseCase
 from src.application.use_cases.category import GetAllCategoriesUseCase
 from src.application.use_cases.payment import CheckPaymentStatusUseCase
-from src.infrastructure.payment.status import PaymentStatusEnum
+from src.domain.enums import PaymentStatus
+from src.infrastructure.payment.status import PaymentErrorCode
 from src.presentation.bot.keyboards.inline_keyboards import (
     get_cities_keyboard,
     get_categories_keyboard,
@@ -97,14 +98,14 @@ async def check_payment_status(
         await callback.answer()
         return
     
-    if result.status == PaymentStatusEnum.SUCCESS:
+    if result.status == PaymentStatus.SUCCESS:
         await callback.message.answer(
             "✅ Платеж прошел успешно!\n\n"
             "🎉 Абонемент активирован!"
         )
         await state.clear()
         
-    elif result.status == PaymentStatusEnum.ERROR:
+    elif result.status == PaymentStatus.ERROR:
         error_msg = result.error_code.description if result.error_code else "Неизвестная ошибка"
         await callback.message.answer(
             f"❌ Платеж не прошел\n\n"
@@ -112,13 +113,13 @@ async def check_payment_status(
             "Попробуйте оплатить снова или обратитесь в поддержку."
         )
         
-    elif result.status in [PaymentStatusEnum.NEW, PaymentStatusEnum.SECURE_3D, PaymentStatusEnum.AUTH]:
+    elif result.status in [PaymentStatus.NEW, PaymentStatus.SECURE_3D, PaymentStatus.AUTH]:
         await callback.message.answer(
             f"⏳ Статус платежа: {result.status.description}\n\n"
             "Ожидаем подтверждения платежа..."
         )
         
-    elif result.status in [PaymentStatusEnum.RETURN, PaymentStatusEnum.REFUND]:
+    elif result.status in [PaymentStatus.RETURN, PaymentStatus.REFUND]:
         await callback.message.answer(
             f"↩️ Платеж возвращен\n\n"
             f"Статус: {result.status.description}"

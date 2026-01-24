@@ -3,7 +3,12 @@ import uuid
 from loguru import logger
 
 from src.domain.entities import SubscriptionPlan
-from src.domain.interfaces.repositories import ISubscriptionPlanRepository
+from src.domain.interfaces.repositories import (
+    ISubscriptionPlanRepository,
+    IUserRepository,
+    IPaymentRepository,
+)
+from src.domain.enums import PaymentStatus
 from src.infrastructure.payment.airbapay import AirbaPayGateway
 
 
@@ -20,12 +25,23 @@ class BuySubscriptionPlanUseCase:
     def __init__(
         self,
         subscription_plan_repository: ISubscriptionPlanRepository,
+        user_repository: IUserRepository,
+        payment_repository: IPaymentRepository,
         payment_gateway: AirbaPayGateway,
     ):
         self._subscription_plan_repository = subscription_plan_repository
+        self._user_repository = user_repository
+        self._payment_repository = payment_repository
         self._payment_gateway = payment_gateway
 
-    async def execute(self, user_id: int, plan_id: int) -> BuySubscriptionResult:
+    async def execute(self, telegram_id: int, plan_id: int) -> BuySubscriptionResult:
+        user = await self._user_repository.get_by_telegram_id(telegram_id)
+        if not user:
+            return BuySubscriptionResult(
+                success=False,
+                error_message="Пользователь не найден"
+            )
+        
         plan = await self._subscription_plan_repository.get_by_id(plan_id)
         
         if not plan:
@@ -43,7 +59,7 @@ class BuySubscriptionPlanUseCase:
         
         try:
             invoice_id = str(uuid.uuid4())
-            account_id = str(user_id)
+            account_id = str(telegram_id)
             
             payment_result = await self._payment_gateway.payment.create_payment(
                 invoice_id=invoice_id,
@@ -66,7 +82,7 @@ class BuySubscriptionPlanUseCase:
                 )
             
             redirect_url = payment_result.get("redirect_url")
-            payment_id = payment_result.get("payment_id")
+            external_payment_id = payment_result.get("payment_id")
             
             if not redirect_url:
                 return BuySubscriptionResult(
@@ -75,11 +91,22 @@ class BuySubscriptionPlanUseCase:
                     error_message="Ссылка на оплату не получена"
                 )
             
+            payment = await self._payment_repository.create(
+                user_id=user.id,
+                amount=plan.price,
+                currency="KZT",
+                status=PaymentStatus.NEW,
+                payment_id=external_payment_id,
+                invoice_id=invoice_id,
+            )
+            
+            logger.info(f"Payment created: id={payment.id}, user_id={user.id}, amount={plan.price}")
+            
             return BuySubscriptionResult(
                 success=True,
                 plan=plan,
                 redirect_url=redirect_url,
-                payment_id=payment_id
+                payment_id=external_payment_id
             )
             
         except Exception as e:

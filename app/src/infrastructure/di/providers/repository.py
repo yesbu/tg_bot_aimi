@@ -6,11 +6,15 @@ from src.domain.interfaces.repositories import (
     ISubscriptionPlanRepository,
     ICityRepository,
     ICategoryRepository,
+    IPaymentRepository,
+    ISubscriptionRepository,
 )
 from src.infrastructure.persistence.repositories.user_repository import UserRepository
 from src.infrastructure.persistence.repositories.subscription_plan_repository import SubscriptionPlanRepository
 from src.infrastructure.persistence.repositories.city_repository import CityRepository
 from src.infrastructure.persistence.repositories.category_repository import CategoryRepository
+from src.infrastructure.persistence.repositories.payment_repository import PaymentRepository
+from src.infrastructure.persistence.repositories.subscription_repository import SubscriptionRepository
 
 
 class RepositoryProvider(Provider):
@@ -29,3 +33,11 @@ class RepositoryProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def provide_category_repository(self, session: AsyncSession) -> ICategoryRepository:
         return CategoryRepository(session)
+    
+    @provide(scope=Scope.REQUEST)
+    def provide_payment_repository(self, session: AsyncSession) -> IPaymentRepository:
+        return PaymentRepository(session)
+    
+    @provide(scope=Scope.REQUEST)
+    def provide_subscription_repository(self, session: AsyncSession) -> ISubscriptionRepository:
+        return SubscriptionRepository(session)

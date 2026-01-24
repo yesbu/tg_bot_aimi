@@ -3,6 +3,8 @@ from dishka import Provider, Scope, provide
 from src.domain.interfaces.repositories import (
     IUserRepository,
     ISubscriptionPlanRepository,
+    ISubscriptionRepository,
+    IPaymentRepository,
     ICityRepository,
     ICategoryRepository,
 )
@@ -13,10 +15,10 @@ from src.application.use_cases.user import (
 )
 from src.application.use_cases.subscription import (
     GetActiveSubscriptionPlansUseCase,
-    BuySubscriptionPlanUseCase
-    
+    BuySubscriptionPlanUseCase,
+    GetUserActiveSubscriptionUseCase,
 )
-from src.application.use_cases.payment import CheckPaymentStatusUseCase
+from src.application.use_cases.payment import CheckPaymentStatusUseCase, GetUserPaymentsUseCase
 from src.application.use_cases.city import GetAllCitiesUseCase
 from src.application.use_cases.category import GetAllCategoriesUseCase
 from src.infrastructure.payment.airbapay import AirbaPayGateway
@@ -42,6 +44,13 @@ class UseCaseProvider(Provider):
     @provide(scope=Scope.REQUEST)
     def provide_get_active_plans(self, subscription_plan_repo: ISubscriptionPlanRepository) -> GetActiveSubscriptionPlansUseCase:
         return GetActiveSubscriptionPlansUseCase(subscription_plan_repo)
+    
+    @provide(scope=Scope.REQUEST)
+    def provide_get_user_active_subscription(
+        self,
+        subscription_repo: ISubscriptionRepository
+    ) -> GetUserActiveSubscriptionUseCase:
+        return GetUserActiveSubscriptionUseCase(subscription_repo)
 
     @provide(scope=Scope.REQUEST)
     def provide_get_all_cities(
@@ -63,10 +72,14 @@ class UseCaseProvider(Provider):
     def provide_buy_subscription_plan(
         self,
         subscription_plan_repo: ISubscriptionPlanRepository,
+        user_repo: IUserRepository,
+        payment_repo: IPaymentRepository,
         payment_gateway: AirbaPayGateway,
     ) -> BuySubscriptionPlanUseCase:
         return BuySubscriptionPlanUseCase(
             subscription_plan_repo,
+            user_repo,
+            payment_repo,
             payment_gateway,
         )
     
@@ -74,5 +87,21 @@ class UseCaseProvider(Provider):
     def provide_check_payment_status(
         self,
         payment_gateway: AirbaPayGateway,
+        payment_repo: IPaymentRepository,
+        subscription_repo: ISubscriptionRepository,
+        subscription_plan_repo: ISubscriptionPlanRepository,
     ) -> CheckPaymentStatusUseCase:
-        return CheckPaymentStatusUseCase(payment_gateway)
+        return CheckPaymentStatusUseCase(
+            payment_gateway,
+            payment_repo,
+            subscription_repo,
+            subscription_plan_repo,
+        )
+    
+    @provide(scope=Scope.REQUEST)
+    def provide_get_user_payments(
+        self,
+        payment_repo: IPaymentRepository,
+        user_repo: IUserRepository,
+    ) -> GetUserPaymentsUseCase:
+        return GetUserPaymentsUseCase(payment_repo, user_repo)
