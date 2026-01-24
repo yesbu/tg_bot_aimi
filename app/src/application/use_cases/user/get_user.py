@@ -31,7 +31,6 @@ class GetUserUseCase:
             "first_name": user.first_name,
             "last_name": user.last_name,
             "phone": user.phone,
-            "city": user.city,
             "role": user.role.value,
             "created_at": user.created_at.isoformat() if user.created_at else None,
             "updated_at": user.updated_at.isoformat() if user.updated_at else None,
@@ -47,7 +46,6 @@ class GetUserUseCase:
             first_name=data.get("first_name"),
             last_name=data.get("last_name"),
             phone=data.get("phone"),
-            city=data.get("city"),
             role=Role(data["role"]),
             is_deleted=data.get("is_deleted", False),
         )

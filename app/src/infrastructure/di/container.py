@@ -4,6 +4,7 @@ from src.infrastructure.di.providers.database import DatabaseProvider
 from src.infrastructure.di.providers.repository import RepositoryProvider
 from src.infrastructure.di.providers.cache import CacheProvider
 from src.infrastructure.di.providers.use_case import UseCaseProvider
+from src.infrastructure.di.providers.payment import PaymentProvider
 
 
 def create_container() -> AsyncContainer:
@@ -12,4 +13,5 @@ def create_container() -> AsyncContainer:
         CacheProvider(),
         RepositoryProvider(),
         UseCaseProvider(),
+        PaymentProvider(),
     )

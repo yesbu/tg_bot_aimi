@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
 
-from src.domain.enums import SubscriptionStatus
-
 
 @dataclass
 class SubscriptionPlan:

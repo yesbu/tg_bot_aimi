@@ -62,4 +62,3 @@ class DatabaseManager:
             self._session_factory = None
 
 
-db_manager = DatabaseManager()

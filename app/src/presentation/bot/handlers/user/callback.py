@@ -1,13 +1,17 @@
 ﻿from aiogram import Router, F
 from aiogram.types import CallbackQuery
+from aiogram.fsm.context import FSMContext
 from dishka import FromDishka
 
+from src.application.use_cases.subscription import BuySubscriptionPlanUseCase
 from src.application.use_cases.city import GetAllCitiesUseCase
 from src.application.use_cases.category import GetAllCategoriesUseCase
-from src.application.use_cases.subscription import GetSubscriptionPlanByIdUseCase
+from src.application.use_cases.payment import CheckPaymentStatusUseCase
+from src.infrastructure.payment.status import PaymentStatusEnum
 from src.presentation.bot.keyboards.inline_keyboards import (
     get_cities_keyboard,
-    get_categories_keyboard
+    get_categories_keyboard,
+    get_payment_flow_keyboard
 )
 
 
@@ -45,24 +49,88 @@ async def select_category(
 @router.callback_query(F.data.startswith("buy_plan_"))
 async def buy_subscription_plan(
     callback: CallbackQuery,
-    get_plan_by_id: FromDishka[GetSubscriptionPlanByIdUseCase]
+    buy_subscription_use_case: FromDishka[BuySubscriptionPlanUseCase]
 ):
     plan_id = int(callback.data.replace("buy_plan_", ""))
-
-    plan = await get_plan_by_id.execute(plan_id)
-
-    if not plan:
-        await callback.answer("Тариф не найден", show_alert=True)
+    user_id = callback.from_user.id
+    
+    result = await buy_subscription_use_case.execute(user_id, plan_id)
+    
+    if not result.success:
+        await callback.answer(result.error_message, show_alert=True)
         return
-
-    text = (
-        f"✅ Вы выбрали тариф:\n\n"
-        f"📅 {plan.name}\n"
-        f"💰 {plan.price:,.0f} ₸\n"
-        f"⏰ {plan.duration_months} мес\n"
-        f"🎯 {plan.visits_limit} посещений\n"
-        f"{plan.description}"
-    )
-
-    await callback.message.edit_text(text)
+    
+    if result.redirect_url:
+        await callback.message.answer(
+            f"💳 Оплата абонемента\n\n"
+            f"Абонемент: {result.plan.name}\n"
+            f"Сумма: {result.plan.price:,.0f} ₸\n\n"
+            f"Перейдите по ссылке для оплаты:",
+            reply_markup=get_payment_flow_keyboard(
+                payment_url=result.redirect_url,
+                payment_id=result.payment_id or "0",
+                subscription_id=0
+            )
+        )
+    else:
+        await callback.message.answer(
+            "⚠️ Ошибка при создании ссылки на оплату. Обратитесь в поддержку."
+        )
+    
     await callback.answer()
+    
+
+@router.callback_query(F.data.startswith("check_payment_"))
+async def check_payment_status(
+    callback: CallbackQuery,
+    state: FSMContext,
+    check_payment_use_case: FromDishka[CheckPaymentStatusUseCase],
+):
+    payment_id = callback.data.replace("check_payment_", "")
+    
+    result = await check_payment_use_case.execute(payment_id)
+    
+    if not result.success:
+        await callback.message.answer(
+            f"❌ {result.error_message}"
+        )
+        await callback.answer()
+        return
+    
+    if result.status == PaymentStatusEnum.SUCCESS:
+        await callback.message.answer(
+            "✅ Платеж прошел успешно!\n\n"
+            "🎉 Абонемент активирован!"
+        )
+        await state.clear()
+        
+    elif result.status == PaymentStatusEnum.ERROR:
+        error_msg = result.error_code.description if result.error_code else "Неизвестная ошибка"
+        await callback.message.answer(
+            f"❌ Платеж не прошел\n\n"
+            f"Ошибка: {error_msg}\n\n"
+            "Попробуйте оплатить снова или обратитесь в поддержку."
+        )
+        
+    elif result.status in [PaymentStatusEnum.NEW, PaymentStatusEnum.SECURE_3D, PaymentStatusEnum.AUTH]:
+        await callback.message.answer(
+            f"⏳ Статус платежа: {result.status.description}\n\n"
+            "Ожидаем подтверждения платежа..."
+        )
+        
+    elif result.status in [PaymentStatusEnum.RETURN, PaymentStatusEnum.REFUND]:
+        await callback.message.answer(
+            f"↩️ Платеж возвращен\n\n"
+            f"Статус: {result.status.description}"
+        )
+        
+    else:
+        await callback.message.answer(
+            f"📋 Статус платежа: {result.status.description}\n\n"
+            "Обратитесь в поддержку для уточнения."
+        )
+    
+    await callback.answer()
+
+
+    

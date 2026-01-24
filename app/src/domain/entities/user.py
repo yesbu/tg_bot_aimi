@@ -12,7 +12,6 @@ class User:
     first_name: str | None = None
     last_name: str | None = None
     phone: str | None = None
-    city: str | None = None
     id: int | None = None
     created_at: datetime | None = None
     updated_at: datetime | None = None
@@ -40,10 +39,7 @@ class User:
         if self.role == new_role:
             return
         self.role = new_role
-    
-    def update_city(self, city: str) -> None:
-        self.city = city
-    
+        
     def update_contact_info(
         self,
         phone: str | None = None,

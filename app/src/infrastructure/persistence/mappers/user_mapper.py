@@ -12,7 +12,6 @@ class UserMapper:
             first_name=model.first_name,
             last_name=model.last_name,
             phone=model.phone,
-            city=model.city,
             role=model.role,
             created_at=model.created_at,
             updated_at=model.updated_at,
@@ -28,7 +27,6 @@ class UserMapper:
             first_name=entity.first_name,
             last_name=entity.last_name,
             phone=entity.phone,
-            city=entity.city,
             role=entity.role,
         )
     
@@ -38,5 +36,4 @@ class UserMapper:
         model.first_name = entity.first_name
         model.last_name = entity.last_name
         model.phone = entity.phone
-        model.city = entity.city
         model.role = entity.role

@@ -7,6 +7,8 @@ __pycache__/
 *.so
 
 old/
+.github/
+.claude/
 
 # Distribution / packaging
 .Python
