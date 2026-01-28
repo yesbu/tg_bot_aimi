@@ -67,11 +67,11 @@ def get_subscription_plans_keyboard(plans: list[SubscriptionPlan]) -> InlineKeyb
     return InlineKeyboardMarkup(inline_keyboard=keyboard)
 
 
-def get_payment_flow_keyboard(payment_url: str, payment_id: int, subscription_id: int) -> InlineKeyboardMarkup:
+def get_payment_flow_keyboard(payment_url: str, payment_id: str) -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [InlineKeyboardButton(text="💳 Оплатить", web_app=WebAppInfo(url=payment_url))],
             [InlineKeyboardButton(text="✅ Проверить платеж", callback_data=f"check_payment_{payment_id}")],
-            [InlineKeyboardButton(text="❌ Отмена", callback_data=f"cancel_payment_{subscription_id}")]
+            [InlineKeyboardButton(text="❌ Отмена", callback_data=f"cancel_payment_{payment_id}")]
         ]
     )

@@ -18,7 +18,11 @@ from src.application.use_cases.subscription import (
     BuySubscriptionPlanUseCase,
     GetUserActiveSubscriptionUseCase,
 )
-from src.application.use_cases.payment import CheckPaymentStatusUseCase, GetUserPaymentsUseCase
+from src.application.use_cases.payment import (
+    CheckPaymentStatusUseCase,
+    GetUserPaymentsUseCase,
+    CancelPaymentUseCase,
+)
 from src.application.use_cases.city import GetAllCitiesUseCase
 from src.application.use_cases.category import GetAllCategoriesUseCase
 from src.infrastructure.payment.airbapay import AirbaPayGateway
@@ -105,3 +109,10 @@ class UseCaseProvider(Provider):
         user_repo: IUserRepository,
     ) -> GetUserPaymentsUseCase:
         return GetUserPaymentsUseCase(payment_repo, user_repo)
+    
+    @provide(scope=Scope.REQUEST)
+    def provide_cancel_payment(
+        self,
+        payment_repo: IPaymentRepository,
+    ) -> CancelPaymentUseCase:
+        return CancelPaymentUseCase(payment_repo)

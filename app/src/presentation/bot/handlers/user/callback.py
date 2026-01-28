@@ -6,7 +6,10 @@ from dishka import FromDishka
 from src.application.use_cases.subscription import BuySubscriptionPlanUseCase
 from src.application.use_cases.city import GetAllCitiesUseCase
 from src.application.use_cases.category import GetAllCategoriesUseCase
-from src.application.use_cases.payment import CheckPaymentStatusUseCase
+from src.application.use_cases.payment import (
+    CheckPaymentStatusUseCase,
+    CancelPaymentUseCase,
+)
 from src.domain.enums import PaymentStatus
 from src.infrastructure.payment.status import PaymentErrorCode
 from src.presentation.bot.keyboards.inline_keyboards import (
@@ -69,8 +72,7 @@ async def buy_subscription_plan(
             f"Перейдите по ссылке для оплаты:",
             reply_markup=get_payment_flow_keyboard(
                 payment_url=result.redirect_url,
-                payment_id=result.payment_id or "0",
-                subscription_id=0
+                payment_id=result.payment_id
             )
         )
     else:
@@ -134,4 +136,25 @@ async def check_payment_status(
     await callback.answer()
 
 
+@router.callback_query(F.data.startswith("cancel_payment_"))
+async def cancel_payment(
+    callback: CallbackQuery,
+    cancel_payment_use_case: FromDishka[CancelPaymentUseCase],
+):
+    payment_id = callback.data.replace("cancel_payment_", "")
     
+    result = await cancel_payment_use_case.execute(payment_id)
+    
+    if result.success:
+        await callback.message.answer(
+            "❌ Платеж отменен\n\n"
+            "Вы можете выбрать другой абонемент или вернуться позже."
+        )
+    else:
+        await callback.message.answer(
+            f"⚠️ {result.error_message}"
+        )
+    
+    await callback.answer()
+
+
